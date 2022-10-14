@@ -1,7 +1,7 @@
 from io import BytesIO
 from typing import Union
 import requests, html_text
-header={'host': 'brainly.co.id', 'content-type': 'application/json; charset=utf-8', 'user-agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:65.0) Gecko/20100101 Firefox/65.0'}
+header={'host': 'brainly.co', 'content-type': 'application/json; charset=utf-8', 'user-agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:65.0) Gecko/20100101 Firefox/65.0'}
 class attachment:
     def __init__(self, url) -> None:
         self.url = url["url"]
@@ -72,7 +72,7 @@ def brainly(query:str, first:int,after=None)->list[content]:
     ```
     '''
     body={'operationName': 'SearchQuery', 'variables': {'query': query, 'after': after, 'first': first}, 'query': 'query SearchQuery($query: String!, $first: Int!, $after: ID) {\n\tquestionSearch(query: $query, first: $first, after: $after) {\n\tedges {\n\t  node {\ncontent\n\t\tattachments{\nurl\n}\n\t\tanswers {\n\t\t\tnodes {\ncontent\n\t\t\t\tattachments{\nurl\n}\n}\n}\n}\n}\n}\n}\n'}
-    req=requests.post("https://brainly.co.id/graphql/id", headers=header, json=body).json()
+    req=requests.post("https://brainly.co/graphql/id", headers=header, json=body).json()
     for i in req["data"]["questionSearch"]["edges"]:
         i["node"]["content"] = html_text.parse_html(i["node"]["content"]).text_content()
         for iX in i["node"]["answers"]["nodes"]:
